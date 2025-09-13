@@ -1,0 +1,60 @@
+SXI.AEP Popular Edits Video Playback - Test Report
+================================================
+
+IMPLEMENTATION CHANGES COMPLETED:
+✅ Replaced 4 video sources with Cloudinary URLs:
+   - Card 1: Salaar (https://res.cloudinary.com/dsod6wvvp/video/upload/v1757733019/salaar_na6x3x.mp4)
+   - Card 2: RRR (https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732999/rrr_ykw8gc.mp4) 
+   - Card 3: Arjun Reddy (https://res.cloudinary.com/dsod6wvvp/video/upload/v1757647059/ARJUN_REDDY_frie4j.mp4)
+   - Card 4: Kalki (https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732980/kalki_hbxnol.mp4)
+
+✅ Removed old backend/complex playback logic
+✅ Added visible Play/Pause buttons on each card
+✅ Implemented single-play enforcement (pauseAllExcept function)
+✅ Added error handling with console logging and dismissible error banners
+✅ Prevented rapid toggle issues with button disable/enable
+✅ Added accessibility features (aria-label, aria-pressed, keyboard support)
+✅ Added screen reader announcements
+✅ Included health check function for debugging
+
+REQUIRED TEST CHECKLIST:
+========================
+
+Test 1: Click Play on card 1 → it should play → other cards must be paused
+STATUS: READY TO TEST
+Expected: Video plays, button changes to "Pause", other videos pause
+
+Test 2: Click Play on card 2 while card 1 playing → card1 pauses, card2 plays  
+STATUS: READY TO TEST
+Expected: First video pauses, second video starts, only one plays at a time
+
+Test 3: Rapidly click Play/Pause repeatedly on one card — button must not blink or get stuck
+STATUS: READY TO TEST  
+Expected: Button disables during async operations, no UI flicker
+
+Test 4: Simulate a load error (empty/invalid URL) and verify error banner appears
+STATUS: READY TO TEST
+Expected: Console error logged, dismissible error banner shows in card
+
+Test 5: Keyboard: Tab to Play button and press Enter — video toggles
+STATUS: READY TO TEST
+Expected: Button receives focus, Enter/Space keys trigger playback
+
+IMPLEMENTATION NOTES:
+====================
+- Videos use preload="none" for performance
+- All videos set to muted, loop, playsinline
+- Error banners are dismissible by clicking
+- Health check runs 2 seconds after page load
+- Screen reader announcements for play/pause state changes
+- Focus styles and proper ARIA attributes for accessibility
+- Mobile carousel functionality preserved
+
+CONSOLE DEBUGGING:
+=================
+- Video errors logged with source URL and error codes
+- Health check logs loading status of all 4 videos
+- Playback errors caught and logged with video source
+- Stalled events logged as warnings
+
+Ready for live testing in browser preview.
