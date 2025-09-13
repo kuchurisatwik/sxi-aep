@@ -154,6 +154,17 @@
             cursor: not-allowed;
         }
         
+        /* Volume button styles */
+        .volume-toggle {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .volume-toggle:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         /* Error banner styles */
         .video-error {
             font-size: 12px;
@@ -290,11 +301,15 @@
                             loop
                             playsinline 
                             preload="none" 
-                            poster="/assets/project1-poster.jpg"
                             src="https://res.cloudinary.com/dsod6wvvp/video/upload/v1757733019/salaar_na6x3x.mp4">
                         </video>
                         
-                        <!-- Play/Pause Button -->
+                        <!-- Controls: Volume + Play/Pause -->
+                        <button class="volume-toggle absolute top-4 right-16 bg-black/70 hover:bg-black/90 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B61]"
+                                data-volume="0"
+                                aria-label="Volume 0% for Salaar">
+                            Mute
+                        </button>
                         <button class="play-toggle absolute top-4 right-4 bg-black/70 hover:bg-black/90 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B61]" 
                                 data-playing="false"
                                 aria-label="Play Salaar">
@@ -326,11 +341,15 @@
                             loop
                             playsinline 
                             preload="none" 
-                            poster="/assets/project2-poster.jpg"
                             src="https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732999/rrr_ykw8gc.mp4">
                         </video>
                         
-                        <!-- Play/Pause Button -->
+                        <!-- Controls: Volume + Play/Pause -->
+                        <button class="volume-toggle absolute top-4 right-16 bg-black/70 hover:bg-black/90 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B61]"
+                                data-volume="0"
+                                aria-label="Volume 0% for RRR">
+                            Mute
+                        </button>
                         <button class="play-toggle absolute top-4 right-4 bg-black/70 hover:bg-black/90 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B61]" 
                                 data-playing="false"
                                 aria-label="Play RRR">
@@ -361,11 +380,15 @@
                             loop
                             playsinline 
                             preload="none" 
-                            poster="/assets/project3-poster.jpg"
                             src="https://res.cloudinary.com/dsod6wvvp/video/upload/v1757647059/ARJUN_REDDY_frie4j.mp4">
                         </video>
                         
-                        <!-- Play/Pause Button -->
+                        <!-- Controls: Volume + Play/Pause -->
+                        <button class="volume-toggle absolute top-4 right-16 bg-black/70 hover:bg-black/90 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B61]"
+                                data-volume="0"
+                                aria-label="Volume 0% for Arjun Reddy">
+                            Mute
+                        </button>
                         <button class="play-toggle absolute top-4 right-4 bg-black/70 hover:bg-black/90 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B61]" 
                                 data-playing="false"
                                 aria-label="Play Arjun Reddy">
@@ -396,11 +419,15 @@
                             loop
                             playsinline 
                             preload="none" 
-                            poster="/assets/project4-poster.jpg"
                             src="https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732980/kalki_hbxnol.mp4">
                         </video>
                         
-                        <!-- Play/Pause Button -->
+                        <!-- Controls: Volume + Play/Pause -->
+                        <button class="volume-toggle absolute top-4 right-16 bg-black/70 hover:bg-black/90 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B61]"
+                                data-volume="0"
+                                aria-label="Volume 0% for Kalki">
+                            Mute
+                        </button>
                         <button class="play-toggle absolute top-4 right-4 bg-black/70 hover:bg-black/90 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FF6B61]" 
                                 data-playing="false"
                                 aria-label="Play Kalki">
@@ -480,6 +507,7 @@
             const cards = Array.from(document.querySelectorAll('.popular-card'));
             const videos = cards.map(c => c.querySelector('video'));
             const buttons = cards.map(c => c.querySelector('.play-toggle'));
+            const volumeButtons = cards.map(c => c.querySelector('.volume-toggle'));
 
             // Pause all videos except the specified one
             const pauseAllExcept = (exceptVideo) => {
@@ -518,15 +546,37 @@
                 announceArea.textContent = message;
             };
 
+            const updateVolumeUI = (btn, vol, title) => {
+                btn.dataset.volume = String(vol);
+                if (vol === 0) {
+                    btn.textContent = 'Mute';
+                    btn.setAttribute('aria-label', `Volume 0% for ${title}`);
+                } else if (vol === 0.5) {
+                    btn.textContent = '50%';
+                    btn.setAttribute('aria-label', `Volume 50% for ${title}`);
+                } else {
+                    btn.textContent = '100%';
+                    btn.setAttribute('aria-label', `Volume 100% for ${title}`);
+                }
+            };
+
             // Set up video and button event handlers
             videos.forEach((video, i) => {
                 const btn = buttons[i];
+                const volBtn = volumeButtons[i];
                 const card = cards[i];
                 
                 if (!video || !btn) return;
 
                 // Get video title for accessibility
                 const videoTitle = card.querySelector('h3')?.textContent || `Video ${i + 1}`;
+
+                // Initialize volume states
+                if (volBtn) {
+                    video.muted = true;
+                    video.volume = 0.0;
+                    updateVolumeUI(volBtn, 0, videoTitle);
+                }
 
                 // Play/Pause button click handler
                 btn.addEventListener('click', async (e) => {
@@ -574,6 +624,37 @@
                         btn.click();
                     }
                 });
+
+                // Volume button handler
+                if (volBtn) {
+                    volBtn.addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        volBtn.disabled = true;
+                        try {
+                            const current = Number(volBtn.dataset.volume ?? (video.muted ? 0 : video.volume));
+                            let next = 0;
+                            if (current === 0) next = 0.5; else if (current === 0.5) next = 1; else next = 0;
+                            video.volume = next;
+                            video.muted = next === 0;
+                            updateVolumeUI(volBtn, next, videoTitle);
+                            announceToScreenReader(`Volume ${next === 0 ? 'muted' : `${next * 100}%`} for ${videoTitle}`);
+                        } catch (err) {
+                            console.error('Volume control error for', video.currentSrc || video.src, err);
+                            createErrorBanner(card, 'Volume control error');
+                        } finally {
+                            volBtn.disabled = false;
+                        }
+                    });
+
+                    // Keyboard support for volume button
+                    volBtn.addEventListener('keydown', (ev) => {
+                        if (ev.key === 'Enter' || ev.key === ' ') {
+                            ev.preventDefault();
+                            volBtn.click();
+                        }
+                    });
+                }
 
                 // Video error event handler
                 video.addEventListener('error', (ev) => {
