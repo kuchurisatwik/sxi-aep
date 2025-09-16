@@ -25,6 +25,9 @@
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- HLS.js for video fallback -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -187,6 +190,81 @@
             white-space: nowrap;
             border: 0;
         }
+        
+        /* Debug overlay styles */
+        .debug-overlay {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            padding: 10px;
+            border-radius: 4px;
+            max-width: 400px;
+            z-index: 1000;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .debug-row {
+            margin: 2px 0;
+            border-bottom: 1px solid #333;
+            padding: 2px 0;
+        }
+        
+        .debug-controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .debug-btn {
+            background: #333;
+            color: #00ff00;
+            border: 1px solid #555;
+            padding: 2px 8px;
+            font-size: 10px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+        
+        .debug-btn:hover {
+            background: #555;
+        }
+        
+        /* Retry banner styles */
+        .retry-banner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 20;
+            min-width: 200px;
+        }
+        
+        .retry-btn {
+            background: #FF6B61;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .retry-btn:hover {
+            background: #ff5449;
+        }
+        
+        /* Remove debug overlay for production - search for "DEBUG_OVERLAY_REMOVE" */
     </style>
 </head>
 <body class="font-body text-white">
@@ -298,12 +376,14 @@
                         <!-- CLOUDINARY VIDEO: Replace URL here if new video uploaded -->
                         <video 
                             class="w-full h-full object-cover project-video" 
-                            src="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757733019/salaar_na6x3x.mp4"
                             preload="metadata"
                             playsinline 
                             muted 
-                            loop
                             controls
+                            crossorigin="anonymous"
+                            data-mp4="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757733019/salaar_na6x3x.mp4"
+                            data-hls="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757733019/salaar_na6x3x.m3u8"
+                            data-lowres="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto,w_640/v1757733019/salaar_na6x3x.mp4"
                             data-video-title="Salaar">
                         </video>
                         
@@ -329,12 +409,14 @@
                         <!-- CLOUDINARY VIDEO: Replace URL here if new video uploaded -->
                         <video 
                             class="w-full h-full object-cover project-video" 
-                            src="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757732999/rrr_ykw8gc.mp4"
                             preload="metadata"
                             playsinline 
                             muted 
-                            loop
                             controls
+                            crossorigin="anonymous"
+                            data-mp4="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757732999/rrr_ykw8gc.mp4"
+                            data-hls="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757732999/rrr_ykw8gc.m3u8"
+                            data-lowres="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto,w_640/v1757732999/rrr_ykw8gc.mp4"
                             data-video-title="RRR">
                         </video>
                         
@@ -359,12 +441,14 @@
                         <!-- CLOUDINARY VIDEO: Replace URL here if new video uploaded -->
                         <video 
                             class="w-full h-full object-cover project-video" 
-                            src="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757647059/ARJUN_REDDY_frie4j.mp4"
                             preload="metadata"
                             playsinline 
                             muted 
-                            loop
                             controls
+                            crossorigin="anonymous"
+                            data-mp4="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757647059/ARJUN_REDDY_frie4j.mp4"
+                            data-hls="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757647059/ARJUN_REDDY_frie4j.m3u8"
+                            data-lowres="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto,w_640/v1757647059/ARJUN_REDDY_frie4j.mp4"
                             data-video-title="Arjun Reddy">
                         </video>
                         
@@ -387,16 +471,18 @@
                         </div>
                         
                         <!-- CLOUDINARY VIDEO: Replace URL here if new video uploaded -->
-<video 
-    class="w-full h-full object-cover project-video" 
-    src="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757732980/kalki_hbxnol.mp4"
-    preload="metadata"
-    playsinline 
-    muted 
-    loop
-    controls
-    data-video-title="Kalki">
-</video>
+                        <video 
+                            class="w-full h-full object-cover project-video" 
+                            preload="metadata"
+                            playsinline 
+                            muted 
+                            controls
+                            crossorigin="anonymous"
+                            data-mp4="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757732980/kalki_hbxnol.mp4"
+                            data-hls="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v1757732980/kalki_hbxnol.m3u8"
+                            data-lowres="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto,w_640/v1757732980/kalki_hbxnol.mp4"
+                            data-video-title="Kalki">
+                        </video>
                         
                         <div class="info-overlay absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                             <h3 class="font-heading text-lg font-bold text-white">Kalki</h3>
@@ -462,97 +548,640 @@
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- JavaScript ###DEBUG_OVERLAY_REMOVE### -->
     <script>
-        // === FIXED PLAYBACK LOGIC: Clean implementation to eliminate blinking and ensure reliable video streaming ===
+        // === ROBUST VIDEO DIAGNOSTICS & FALLBACKS ===
         
-        // Simple, reliable video playback with one-video-at-a-time enforcement
-        (() => {
-            const videos = Array.from(document.querySelectorAll('.project-video'));
+        // Global diagnostics state
+        const videoState = {
+            metrics: [],
+            reports: [],
+            debugMode: true // Set to false for production ###DEBUG_OVERLAY_REMOVE###
+        };
+        
+        // Timing thresholds (ms)
+        const THRESHOLDS = {
+            headTime: 800,
+            loadStart: 2000,
+            loadedMetadata: 5000,
+            playing: 3000
+        };
+        
+        // Network retry configuration
+        const RETRY_CONFIG = {
+            maxAttempts: 3,
+            baseDelay: 500,
+            maxDelay: 5000
+        };
+        
+        // Utility: Exponential backoff delay
+        const getBackoffDelay = (attempt) => {
+            return Math.min(RETRY_CONFIG.baseDelay * Math.pow(2, attempt), RETRY_CONFIG.maxDelay);
+        };
+        
+        // Client-side header checks with fallbacks
+        class NetworkTester {
+            static async testSource(url, videoTitle) {
+                const startTime = performance.now();
+                const results = {
+                    url,
+                    title: videoTitle,
+                    headTime: null,
+                    headSuccess: false,
+                    rangeSuccess: false,
+                    getSuccess: false,
+                    error: null,
+                    attempts: 0
+                };
+                
+                // Try HEAD request with CORS
+                for (let attempt = 0; attempt < RETRY_CONFIG.maxAttempts; attempt++) {
+                    results.attempts++;
+                    try {
+                        const response = await fetch(url, { 
+                            method: 'HEAD', 
+                            mode: 'cors',
+                            cache: 'no-cache'
+                        });
+                        
+                        if (response.ok) {
+                            results.headTime = performance.now() - startTime;
+                            results.headSuccess = true;
+                            console.log(`✅ HEAD success for ${videoTitle}: ${results.headTime.toFixed(0)}ms`);
+                            return results;
+                        }
+                    } catch (error) {
+                        console.warn(`HEAD attempt ${attempt + 1} failed for ${videoTitle}:`, error.message);
+                        if (attempt < RETRY_CONFIG.maxAttempts - 1) {
+                            await this.delay(getBackoffDelay(attempt));
+                        }
+                    }
+                }
+                
+                // Fallback: Try Range request
+                try {
+                    const response = await fetch(url, {
+                        headers: { 'Range': 'bytes=0-1023' },
+                        mode: 'cors'
+                    });
+                    
+                    if (response.ok || response.status === 206) {
+                        results.rangeSuccess = true;
+                        console.log(`✅ Range request success for ${videoTitle}`);
+                        return results;
+                    }
+                } catch (error) {
+                    console.warn(`Range request failed for ${videoTitle}:`, error.message);
+                }
+                
+                // Final fallback: Full GET with blob
+                try {
+                    const response = await fetch(url, { mode: 'no-cors' });
+                    const blob = await response.blob();
+                    if (blob && blob.size > 0) {
+                        results.getSuccess = true;
+                        console.log(`✅ Blob fallback success for ${videoTitle}`);
+                        return results;
+                    }
+                } catch (error) {
+                    results.error = error.message;
+                    console.error(`❌ All network tests failed for ${videoTitle}:`, error.message);
+                }
+                
+                return results;
+            }
             
-            // ERROR HANDLING: Clear console logging for debugging video issues
-            const logVideoError = (video, error, action) => {
-                console.error(`[VIDEO ERROR] ${action} failed for:`, {
-                    src: video.src,
-                    title: video.dataset.videoTitle || 'Unknown',
-                    error: error,
-                    readyState: video.readyState,
-                    networkState: video.networkState
+            static delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+        
+        // HLS Fallback Manager
+        class HLSManager {
+            static isSupported() {
+                return typeof Hls !== 'undefined' && Hls.isSupported();
+            }
+            
+            static setupHLS(video, hlsUrl, videoTitle) {
+                if (!this.isSupported()) {
+                    console.warn(`HLS not supported for ${videoTitle}`);
+                    return null;
+                }
+                
+                const hls = new Hls({
+                    debug: false,
+                    enableWorker: true,
+                    lowLatencyMode: true
                 });
-            };
+                
+                hls.loadSource(hlsUrl);
+                hls.attachMedia(video);
+                
+                // HLS events
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    console.log(`📺 HLS manifest loaded for ${videoTitle}`);
+                    VideoMetrics.recordEvent(video, 'hls_manifest_loaded');
+                });
+                
+                hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
+                    console.log(`📺 HLS level switched for ${videoTitle}: ${data.level}`);
+                });
+                
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    console.error(`❌ HLS error for ${videoTitle}:`, data);
+                    if (data.fatal) {
+                        this.handleFatalError(hls, video, videoTitle);
+                    }
+                });
+                
+                return hls;
+            }
             
-            // SINGLE PLAY ENFORCEMENT: Pause all other videos when one starts playing
-            const pauseAllExcept = (activeVideo) => {
-                videos.forEach(video => {
+            static handleFatalError(hls, video, videoTitle) {
+                console.error(`💀 Fatal HLS error for ${videoTitle}, attempting recovery`);
+                try {
+                    hls.destroy();
+                } catch (e) {
+                    console.error('Error destroying HLS instance:', e);
+                }
+                
+                // Show final fallback
+                VideoFallbacks.showFinalFallback(video, videoTitle);
+            }
+        }
+        
+        // Video Metrics & Timing
+        class VideoMetrics {
+            static initMetrics(video) {
+                const title = video.dataset.videoTitle || 'Unknown';
+                const metrics = {
+                    title,
+                    element: video,
+                    timings: {
+                        t_head: null,
+                        t_loadstart: null,
+                        t_loadedmetadata: null,
+                        t_playing: null
+                    },
+                    events: [],
+                    warnings: [],
+                    networkTests: null,
+                    currentSource: 'none',
+                    hlsInstance: null
+                };
+                
+                videoState.metrics.push(metrics);
+                return metrics;
+            }
+            
+            static recordEvent(video, eventType, data = {}) {
+                const metrics = videoState.metrics.find(m => m.element === video);
+                if (!metrics) return;
+                
+                const timestamp = performance.now();
+                metrics.events.push({
+                    type: eventType,
+                    timestamp,
+                    data
+                });
+                
+                // Record timing
+                if (eventType === 'loadstart') {
+                    metrics.timings.t_loadstart = timestamp;
+                } else if (eventType === 'loadedmetadata') {
+                    metrics.timings.t_loadedmetadata = timestamp;
+                } else if (eventType === 'playing') {
+                    metrics.timings.t_playing = timestamp;
+                }
+                
+                // Check thresholds and warn
+                this.checkThresholds(metrics);
+                
+                // Update debug overlay
+                if (videoState.debugMode) {
+                    DebugOverlay.update();
+                }
+            }
+            
+            static checkThresholds(metrics) {
+                const { timings, warnings, title } = metrics;
+                
+                if (timings.t_loadstart && (timings.t_loadstart > THRESHOLDS.loadStart)) {
+                    const warning = `Load start exceeded threshold: ${timings.t_loadstart.toFixed(0)}ms > ${THRESHOLDS.loadStart}ms`;
+                    warnings.push(warning);
+                    console.warn(`⚠️ ${title}: ${warning}`);
+                }
+                
+                if (timings.t_loadedmetadata && (timings.t_loadedmetadata > THRESHOLDS.loadedMetadata)) {
+                    const warning = `Metadata load exceeded threshold: ${timings.t_loadedmetadata.toFixed(0)}ms > ${THRESHOLDS.loadedMetadata}ms`;
+                    warnings.push(warning);
+                    console.warn(`⚠️ ${title}: ${warning}`);
+                }
+                
+                if (timings.t_playing && (timings.t_playing > THRESHOLDS.playing)) {
+                    const warning = `Play start exceeded threshold: ${timings.t_playing.toFixed(0)}ms > ${THRESHOLDS.playing}ms`;
+                    warnings.push(warning);
+                    console.warn(`⚠️ ${title}: ${warning}`);
+                }
+            }
+        }
+        
+        // Low-res heuristic manager
+        class LowResManager {
+            static shouldUseLowRes(networkTest) {
+                if (!networkTest || !networkTest.headSuccess) return true;
+                return networkTest.headTime < THRESHOLDS.headTime;
+            }
+            
+            static async tryLowResFirst(video, metrics) {
+                const lowResUrl = video.dataset.lowres;
+                if (!lowResUrl) return false;
+                
+                console.log(`🔄 Trying low-res first for ${metrics.title}`);
+                metrics.currentSource = 'lowres';
+                
+                try {
+                    video.src = lowResUrl;
+                    await video.load();
+                    
+                    // Wait 5 seconds for stability, then upgrade
+                    setTimeout(() => {
+                        this.upgradeToHighRes(video, metrics);
+                    }, 5000);
+                    
+                    return true;
+                } catch (error) {
+                    console.error(`Low-res failed for ${metrics.title}:`, error);
+                    return false;
+                }
+            }
+            
+            static upgradeToHighRes(video, metrics) {
+                if (video.paused || video.ended) return; // Only upgrade if still playing
+                
+                const mp4Url = video.dataset.mp4;
+                console.log(`⬆️ Upgrading to high-res for ${metrics.title}`);
+                
+                const currentTime = video.currentTime;
+                video.src = mp4Url;
+                video.currentTime = currentTime;
+                metrics.currentSource = 'mp4';
+            }
+        }
+        
+        // Video Fallbacks & Error Handling
+        class VideoFallbacks {
+            static showRetryBanner(video, videoTitle, options = {}) {
+                const card = video.closest('.popular-card');
+                if (!card) return;
+                
+                // Remove existing banner
+                const existingBanner = card.querySelector('.retry-banner');
+                if (existingBanner) existingBanner.remove();
+                
+                const banner = document.createElement('div');
+                banner.className = 'retry-banner';
+                banner.innerHTML = `
+                    <div style="margin-bottom: 10px;">⚠️ Playback Issue</div>
+                    <div style="font-size: 11px; margin-bottom: 10px;">Network error or stall detected</div>
+                    <button class="retry-btn" data-action="lowres">Retry (Low-res)</button>
+                    <button class="retry-btn" data-action="hls">Try HLS</button>
+                    <button class="retry-btn" data-action="contact">Contact Support</button>
+                    <button class="retry-btn" style="background: #666;" onclick="this.parentElement.remove()">×</button>
+                `;
+                
+                // Add event listeners
+                banner.addEventListener('click', (e) => {
+                    const action = e.target.dataset.action;
+                    if (action === 'lowres') {
+                        this.retryWithLowRes(video, videoTitle);
+                        banner.remove();
+                    } else if (action === 'hls') {
+                        this.retryWithHLS(video, videoTitle);
+                        banner.remove();
+                    } else if (action === 'contact') {
+                        this.showContactFallback(video, videoTitle);
+                    }
+                });
+                
+                card.appendChild(banner);
+                
+                // Auto-remove after 10 seconds
+                setTimeout(() => {
+                    if (banner.parentElement) banner.remove();
+                }, 10000);
+            }
+            
+            static retryWithLowRes(video, videoTitle) {
+                console.log(`🔄 Retrying with low-res for ${videoTitle}`);
+                const lowResUrl = video.dataset.lowres;
+                if (lowResUrl) {
+                    video.src = lowResUrl;
+                    video.load();
+                }
+            }
+            
+            static retryWithHLS(video, videoTitle) {
+                console.log(`🔄 Retrying with HLS for ${videoTitle}`);
+                const hlsUrl = video.dataset.hls;
+                if (hlsUrl && HLSManager.isSupported()) {
+                    const metrics = videoState.metrics.find(m => m.element === video);
+                    if (metrics && metrics.hlsInstance) {
+                        metrics.hlsInstance.destroy();
+                    }
+                    const hls = HLSManager.setupHLS(video, hlsUrl, videoTitle);
+                    if (metrics) metrics.hlsInstance = hls;
+                } else {
+                    console.warn(`HLS not available for ${videoTitle}`);
+                }
+            }
+            
+            static showContactFallback(video, videoTitle) {
+                const card = video.closest('.popular-card');
+                if (!card) return;
+                
+                const fallback = document.createElement('div');
+                fallback.className = 'retry-banner';
+                fallback.innerHTML = `
+                    <div style="margin-bottom: 10px;">📞 Need Help?</div>
+                    <div style="font-size: 11px; margin-bottom: 10px;">Video "${videoTitle}" couldn't load</div>
+                    <a href="mailto:support@sxi.aep?subject=Video Issue: ${videoTitle}" class="retry-btn">Email Support</a>
+                    <button class="retry-btn" style="background: #666;" onclick="this.parentElement.remove()">×</button>
+                `;
+                
+                card.appendChild(fallback);
+            }
+            
+            static showFinalFallback(video, videoTitle) {
+                const card = video.closest('.popular-card');
+                if (!card) return;
+                
+                video.style.display = 'none';
+                const fallback = document.createElement('div');
+                fallback.className = 'w-full h-full bg-gray-800 flex items-center justify-center text-center p-4';
+                fallback.innerHTML = `
+                    <div>
+                        <div class="text-gray-400 mb-2">📹</div>
+                        <div class="text-sm text-gray-300">${videoTitle}</div>
+                        <div class="text-xs text-gray-500 mt-1">Video unavailable</div>
+                        <a href="mailto:support@sxi.aep?subject=Video Issue: ${videoTitle}" 
+                           class="text-xs text-blue-400 underline mt-2 block">Report Issue</a>
+                    </div>
+                `;
+                
+                card.insertBefore(fallback, card.firstChild);
+            }
+        }
+        
+        // Debug Overlay ###DEBUG_OVERLAY_REMOVE###
+        class DebugOverlay {
+            static create() {
+                if (!videoState.debugMode) return;
+                
+                const overlay = document.createElement('div');
+                overlay.id = 'debug-overlay';
+                overlay.className = 'debug-overlay';
+                overlay.innerHTML = `
+                    <div style="font-weight: bold; margin-bottom: 10px;">📊 Video Diagnostics</div>
+                    <div id="debug-content"></div>
+                    <div class="debug-controls">
+                        <button class="debug-btn" onclick="DebugOverlay.downloadReport()">📄 Download Report</button>
+                        <button class="debug-btn" onclick="DebugOverlay.toggle()">👁️ Toggle</button>
+                        <button class="debug-btn" onclick="DebugOverlay.runTests()">🧪 Run Tests</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(overlay);
+                this.update();
+            }
+            
+            static update() {
+                const overlay = document.getElementById('debug-overlay');
+                const content = document.getElementById('debug-content');
+                if (!overlay || !content) return;
+                
+                let html = '';
+                videoState.metrics.forEach((metrics, index) => {
+                    const { title, timings, warnings, currentSource, networkTests } = metrics;
+                    
+                    html += `<div class="debug-row">
+                        <strong>${title}</strong><br/>
+                        Source: ${currentSource}<br/>
+                        Load: ${timings.t_loadstart ? `${timings.t_loadstart.toFixed(0)}ms` : 'N/A'}<br/>
+                        Meta: ${timings.t_loadedmetadata ? `${timings.t_loadedmetadata.toFixed(0)}ms` : 'N/A'}<br/>
+                        Play: ${timings.t_playing ? `${timings.t_playing.toFixed(0)}ms` : 'N/A'}<br/>
+                        Warnings: ${warnings.length}<br/>
+                        Network: ${networkTests ? (networkTests.headSuccess ? '✅' : '❌') : '⏳'}
+                    </div>`;
+                });
+                
+                content.innerHTML = html;
+            }
+            
+            static toggle() {
+                const overlay = document.getElementById('debug-overlay');
+                if (overlay) {
+                    overlay.style.display = overlay.style.display === 'none' ? 'block' : 'none';
+                }
+            }
+            
+            static downloadReport() {
+                const report = {
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent,
+                    metrics: videoState.metrics.map(m => ({
+                        title: m.title,
+                        timings: m.timings,
+                        events: m.events,
+                        warnings: m.warnings,
+                        currentSource: m.currentSource,
+                        networkTests: m.networkTests
+                    })),
+                    summary: this.generateSummary()
+                };
+                
+                const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `video-diagnostics-${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+            
+            static runTests() {
+                console.log('🧪 Running diagnostic tests...');
+                videoState.metrics.forEach(async (metrics) => {
+                    const mp4Url = metrics.element.dataset.mp4;
+                    if (mp4Url) {
+                        metrics.networkTests = await NetworkTester.testSource(mp4Url, metrics.title);
+                        this.update();
+                    }
+                });
+            }
+            
+            static generateSummary() {
+                const total = videoState.metrics.length;
+                const loaded = videoState.metrics.filter(m => m.timings.t_loadedmetadata).length;
+                const warnings = videoState.metrics.reduce((sum, m) => sum + m.warnings.length, 0);
+                
+                return {
+                    totalVideos: total,
+                    loadedVideos: loaded,
+                    totalWarnings: warnings,
+                    loadSuccessRate: `${((loaded / total) * 100).toFixed(1)}%`
+                };
+            }
+        }
+        
+        // Single-play enforcement
+        class PlaybackController {
+            static pauseAllExcept(activeVideo) {
+                videoState.metrics.forEach(metrics => {
+                    const video = metrics.element;
                     if (video !== activeVideo && !video.paused) {
                         video.pause();
                     }
                 });
-            };
+            }
             
-            // Set up video event listeners for each video
-            videos.forEach((video, index) => {
-                // ERROR HANDLING: Log load errors with clear debugging info
+            static async handlePlay(video) {
+                const metrics = videoState.metrics.find(m => m.element === video);
+                if (!metrics) return;
+                
+                // Disable controls during play attempt
+                video.controls = false;
+                
+                try {
+                    // Pause others first
+                    this.pauseAllExcept(video);
+                    
+                    // Attempt play
+                    await video.play();
+                    VideoMetrics.recordEvent(video, 'play_success');
+                    
+                } catch (error) {
+                    console.error(`Play failed for ${metrics.title}:`, error);
+                    VideoMetrics.recordEvent(video, 'play_failed', { error: error.message });
+                    
+                    // Show retry banner
+                    VideoFallbacks.showRetryBanner(video, metrics.title);
+                    
+                } finally {
+                    // Re-enable controls
+                    video.controls = true;
+                }
+            }
+        }
+        
+        // CSP Warning and Netlify Headers
+        function checkCSPAndHeaders() {
+            console.log(`
+🔒 SECURITY CONFIGURATION NEEDED:
+
+1. Add to Netlify _headers file:
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Content-Security-Policy: default-src 'self'; media-src 'self' https://res.cloudinary.com https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://res.cloudinary.com;
+
+2. Test CSP compliance by checking console for violations
+3. Update CSP if new domains are added
+            `);
+            
+            // Check for CSP violations
+            document.addEventListener('securitypolicyviolation', (e) => {
+                console.error('🚨 CSP Violation:', {
+                    directive: e.violatedDirective,
+                    blockedURI: e.blockedURI,
+                    originalPolicy: e.originalPolicy
+                });
+            });
+        }
+        
+        // Main initialization
+        async function initializeVideoDiagnostics() {
+            console.log('🚀 Initializing robust video diagnostics...');
+            
+            const videos = Array.from(document.querySelectorAll('.project-video'));
+            
+            // Initialize metrics for each video
+            videos.forEach(video => {
+                const metrics = VideoMetrics.initMetrics(video);
+                
+                // Set up comprehensive event listeners
+                video.addEventListener('loadstart', () => VideoMetrics.recordEvent(video, 'loadstart'));
+                video.addEventListener('loadedmetadata', () => VideoMetrics.recordEvent(video, 'loadedmetadata'));
+                video.addEventListener('canplay', () => VideoMetrics.recordEvent(video, 'canplay'));
+                video.addEventListener('playing', () => VideoMetrics.recordEvent(video, 'playing'));
+                video.addEventListener('pause', () => VideoMetrics.recordEvent(video, 'pause'));
+                video.addEventListener('stalled', () => {
+                    VideoMetrics.recordEvent(video, 'stalled');
+                    VideoFallbacks.showRetryBanner(video, metrics.title);
+                });
+                video.addEventListener('suspend', () => {
+                    VideoMetrics.recordEvent(video, 'suspend');
+                    VideoFallbacks.showRetryBanner(video, metrics.title);
+                });
                 video.addEventListener('error', (e) => {
-                    logVideoError(video, video.error, 'Load');
+                    VideoMetrics.recordEvent(video, 'error', { 
+                        code: video.error?.code,
+                        message: video.error?.message 
+                    });
+                    VideoFallbacks.showRetryBanner(video, metrics.title);
                 });
                 
-                video.addEventListener('stalled', (e) => {
-                    console.warn(`[VIDEO STALLED] ${video.dataset.videoTitle || `Video ${index + 1}`} - Check network connection`);
-                });
-                
-                // SUCCESS LOGGING: Track successful load
-                video.addEventListener('loadedmetadata', () => {
-                    console.log(`[VIDEO LOADED] ${video.dataset.videoTitle || `Video ${index + 1}`} ready - Duration: ${video.duration}s`);
-                });
-                
-                // AUTO PAUSE OTHERS: When any video starts playing, pause all others
-                video.addEventListener('play', () => {
-                    pauseAllExcept(video);
-                    console.log(`[VIDEO PLAYING] ${video.dataset.videoTitle || `Video ${index + 1}`} started`);
-                });
-                
-                video.addEventListener('pause', () => {
-                    console.log(`[VIDEO PAUSED] ${video.dataset.videoTitle || `Video ${index + 1}`} paused`);
-                });
-                
-                // PLAYBACK ERROR HANDLING: Catch and log play() promise rejections
+                // Override play method for enhanced control
                 const originalPlay = video.play;
                 video.play = function() {
-                    const promise = originalPlay.call(this);
-                    if (promise !== undefined) {
-                        promise.catch(error => {
-                            logVideoError(video, error, 'Play');
-                        });
-                    }
-                    return promise;
+                    return PlaybackController.handlePlay(this);
                 };
+                
+                // Run network tests
+                const mp4Url = video.dataset.mp4;
+                if (mp4Url) {
+                    NetworkTester.testSource(mp4Url, metrics.title).then(result => {
+                        metrics.networkTests = result;
+                        metrics.timings.t_head = result.headTime;
+                        
+                        // Apply low-res heuristic
+                        if (LowResManager.shouldUseLowRes(result)) {
+                            LowResManager.tryLowResFirst(video, metrics);
+                        } else {
+                            video.src = mp4Url;
+                            metrics.currentSource = 'mp4';
+                        }
+                        
+                        if (videoState.debugMode) {
+                            DebugOverlay.update();
+                        }
+                    });
+                }
             });
             
-            // DEPLOYMENT CHECK: Ensure all video URLs are HTTPS
-            const checkVideoSources = () => {
-                console.log('=== VIDEO SOURCE VERIFICATION ===');
-                videos.forEach((video, index) => {
-                    const isHTTPS = video.src.startsWith('https://');
-                    const status = isHTTPS ? '✅ HTTPS' : '❌ HTTP (Fix needed)';
-                    console.log(`Video ${index + 1}: ${status} - ${video.src}`);
-                });
-            };
+            // Create debug overlay ###DEBUG_OVERLAY_REMOVE###
+            if (videoState.debugMode) {
+                DebugOverlay.create();
+            }
             
-            // Run verification after a short delay
-            setTimeout(checkVideoSources, 1000);
+            // Check security configuration
+            checkCSPAndHeaders();
             
-            // URL UPDATE HELPER: Console log for easy URL replacement
-            console.log(`
-=== CLOUDINARY URL UPDATE GUIDE ===
-To replace video URLs, update these lines in HTML:
-- Card 1 (Salaar): Line ~299
-- Card 2 (RRR): Line ~331  
-- Card 3 (Arjun Reddy): Line ~364
-- Card 4 (Kalki): Line ~395
-Use format: https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto/v[timestamp]/[filename].mp4
-            `);
-        })();
+            console.log(`✅ Video diagnostics initialized for ${videos.length} videos`);
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeVideoDiagnostics);
+        } else {
+            initializeVideoDiagnostics();
+        }
+        
+        // Export for global access
+        window.VideoState = videoState;
+        window.DebugOverlay = DebugOverlay;
+    </script>
 
         // Mobile carousel controls (keeping existing functionality)
         function setupMobileCarousel() {
