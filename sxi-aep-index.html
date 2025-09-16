@@ -265,6 +265,43 @@
         }
         
         /* Remove debug overlay for production - search for "DEBUG_OVERLAY_REMOVE" */
+        
+        /* Mute/Unmute button styles */
+        .mute-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 10;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mute-toggle:hover {
+            background: rgba(255, 107, 97, 0.2);
+            border-color: #FF6B61;
+            transform: scale(1.05);
+        }
+        
+        .mute-toggle:focus {
+            outline: 2px solid #FF6B61;
+            outline-offset: 2px;
+        }
+        
+        .mute-toggle.muted {
+            background: rgba(255, 107, 97, 0.8);
+            border-color: #FF6B61;
+        }
     </style>
 </head>
 <body class="font-body text-white">
@@ -387,6 +424,14 @@
                             data-video-title="Salaar">
                         </video>
                         
+                        <!-- Mute/Unmute Toggle -->
+                        <button class="mute-toggle muted" 
+                                aria-label="Toggle mute for Salaar video"
+                                data-video-target="0"
+                                tabindex="0">
+                            <span class="mute-icon">🔇</span>
+                        </button>
+                        
                         <!-- Info Overlay -->
                         <div class="info-overlay absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                             <h3 class="font-heading text-lg font-bold text-white">Salaar</h3>
@@ -420,6 +465,14 @@
                             data-video-title="RRR">
                         </video>
                         
+                        <!-- Mute/Unmute Toggle -->
+                        <button class="mute-toggle muted" 
+                                aria-label="Toggle mute for RRR video"
+                                data-video-target="1"
+                                tabindex="0">
+                            <span class="mute-icon">🔇</span>
+                        </button>
+                        
                         <div class="info-overlay absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                             <h3 class="font-heading text-lg font-bold text-white">RRR</h3>
                             <p class="text-sm text-gray-300">Epic trailer • 0:40</p>
@@ -452,6 +505,14 @@
                             data-video-title="Arjun Reddy">
                         </video>
                         
+                        <!-- Mute/Unmute Toggle -->
+                        <button class="mute-toggle muted" 
+                                aria-label="Toggle mute for Arjun Reddy video"
+                                data-video-target="2"
+                                tabindex="0">
+                            <span class="mute-icon">🔇</span>
+                        </button>
+                        
                         <div class="info-overlay absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                             <h3 class="font-heading text-lg font-bold text-white">Arjun Reddy</h3>
                             <p class="text-sm text-gray-300">Drama edit • 0:30</p>
@@ -483,6 +544,14 @@
                             data-lowres="https://res.cloudinary.com/dsod6wvvp/video/upload/f_auto,q_auto,w_640/v1757732980/kalki_hbxnol.mp4"
                             data-video-title="Kalki">
                         </video>
+                        
+                        <!-- Mute/Unmute Toggle -->
+                        <button class="mute-toggle muted" 
+                                aria-label="Toggle mute for Kalki video"
+                                data-video-target="3"
+                                tabindex="0">
+                            <span class="mute-icon">🔇</span>
+                        </button>
                         
                         <div class="info-overlay absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                             <h3 class="font-heading text-lg font-bold text-white">Kalki</h3>
@@ -1100,6 +1169,71 @@
             });
         }
         
+        // Mute/Unmute Controller
+        class MuteController {
+            static setupMuteToggles() {
+                const muteButtons = Array.from(document.querySelectorAll('.mute-toggle'));
+                const videos = Array.from(document.querySelectorAll('.project-video'));
+                
+                muteButtons.forEach((button, index) => {
+                    const video = videos[index];
+                    if (!video) return;
+                    
+                    // Set initial state
+                    this.updateMuteButton(button, video.muted);
+                    
+                    // Click handler
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.toggleMute(video, button);
+                    });
+                    
+                    // Keyboard handler
+                    button.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            this.toggleMute(video, button);
+                        }
+                    });
+                    
+                    // Listen for video mute changes (from native controls)
+                    video.addEventListener('volumechange', () => {
+                        this.updateMuteButton(button, video.muted);
+                    });
+                });
+            }
+            
+            static toggleMute(video, button) {
+                const wasMuted = video.muted;
+                video.muted = !wasMuted;
+                
+                this.updateMuteButton(button, video.muted);
+                
+                // Log for diagnostics
+                const title = video.dataset.videoTitle || 'Unknown';
+                console.log(`🔊 ${title} ${video.muted ? 'muted' : 'unmuted'}`);
+                
+                // Update metrics
+                VideoMetrics.recordEvent(video, video.muted ? 'muted' : 'unmuted');
+            }
+            
+            static updateMuteButton(button, isMuted) {
+                const icon = button.querySelector('.mute-icon');
+                
+                if (isMuted) {
+                    button.classList.add('muted');
+                    button.setAttribute('aria-label', button.getAttribute('aria-label').replace('Unmute', 'Unmute').replace('Toggle mute', 'Unmute'));
+                    if (icon) icon.textContent = '🔇';
+                } else {
+                    button.classList.remove('muted');
+                    button.setAttribute('aria-label', button.getAttribute('aria-label').replace('Unmute', 'Mute').replace('Toggle mute', 'Mute'));
+                    if (icon) icon.textContent = '🔊';
+                }
+            }
+        }
+        
         // Main initialization
         async function initializeVideoDiagnostics() {
             console.log('🚀 Initializing robust video diagnostics...');
@@ -1160,6 +1294,9 @@
                 }
             });
             
+            // Initialize mute/unmute controls
+            MuteController.setupMuteToggles();
+            
             // Create debug overlay ###DEBUG_OVERLAY_REMOVE###
             if (videoState.debugMode) {
                 DebugOverlay.create();
@@ -1168,7 +1305,7 @@
             // Check security configuration
             checkCSPAndHeaders();
             
-            console.log(`✅ Video diagnostics initialized for ${videos.length} videos`);
+            console.log(`✅ Video diagnostics initialized for ${videos.length} videos with mute controls`);
         }
         
         // Initialize when DOM is ready
