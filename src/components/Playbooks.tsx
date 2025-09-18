@@ -1,114 +1,326 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useState, useRef, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
-const popularEdits = [{
-  title: "FIRESTORM Edit",
-  description: "Explosive action sequence with cinematic fire effects",
-  video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-  thumbnail: "/lovable-uploads/f91f810d-e703-4cfa-86dd-edb84d63f6b2.png",
-  alt: "Firestorm cinematic edit showcase"
-}, {
-  title: "Reel Pack — Action",
-  description: "High-energy vertical cuts with dynamic transitions",
-  video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-  thumbnail: "/lovable-uploads/099df520-19a4-49b0-9ee5-caaa3c032b60.png",
-  alt: "Action reel editing showcase"
-}, {
-  title: "Celebrity Style Cut",
-  description: "Premium editing with celebrity-grade color grading",
-  video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  thumbnail: "/lovable-uploads/0585b77e-6e06-44c3-8a97-9a0cd63a6682.png",
-  alt: "Celebrity style edit showcase"
-}, {
-  title: "Storm Sequence",
-  description: "Dramatic weather effects with intense color grading",
-  video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-  thumbnail: "/lovable-uploads/7f2d4148-269e-4737-ad5e-af91112725b3.png",
-  alt: "Storm sequence edit showcase"
-}];
+import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+
+/* 
+  POPULAR EDITS - Fresh Implementation
+  
+  Test checklist:
+  - Click Play on card 1 → starts playing; other cards pause
+  - Click Play on card 2 while card1 playing → card1 pauses; card2 plays  
+  - Tap Mute/Unmute toggles audio state
+  - Rapid clicks do not cause button blinking or stuck state
+  - Video loads only when near viewport (data-src behavior)
+  - If URL fails, error banner appears and Retry works
+  
+  To change Cloudinary URLs: Update videoData array below
+  To change posters: Update poster property in videoData array
+*/
+
+const videoData = [
+  {
+    id: "salaar",
+    title: "FIRESTORM Edit", 
+    description: "Explosive action sequence with cinematic fire effects",
+    src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757733019/salaar_na6x3x.mp4",
+    lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757733019/salaar_na6x3x.mp4",
+    poster: "/assets/proj1-poster.jpg"
+  },
+  {
+    id: "rrr", 
+    title: "Reel Pack — Action",
+    description: "High-energy vertical cuts with dynamic transitions", 
+    src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732999/rrr_ykw8gc.mp4",
+    lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757732999/rrr_ykw8gc.mp4",
+    poster: "/assets/proj2-poster.jpg"
+  },
+  {
+    id: "arjun",
+    title: "Celebrity Style Cut", 
+    description: "Premium editing with celebrity-grade color grading",
+    src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757647059/ARJUN_REDDY_frie4j.mp4", 
+    lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757647059/ARJUN_REDDY_frie4j.mp4",
+    poster: "/assets/proj3-poster.jpg"
+  },
+  {
+    id: "kalki",
+    title: "Storm Sequence",
+    description: "Dramatic weather effects with intense color grading",
+    src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732980/kalki_hbxnol.mp4",
+    lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757732980/kalki_hbxnol.mp4", 
+    poster: "/assets/proj4-poster.jpg"
+  }
+];
+
 export const Playbooks = () => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [playingVideos, setPlayingVideos] = useState<Set<number>>(new Set());
-  const [lastTapTime, setLastTapTime] = useState<{
-    [key: number]: number;
-  }>({});
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const [playingStates, setPlayingStates] = useState<{[key: string]: boolean}>({});
+  const [mutedStates, setMutedStates] = useState<{[key: string]: boolean}>({});
+  const [loadingStates, setLoadingStates] = useState<{[key: string]: boolean}>({});
+  const [errorStates, setErrorStates] = useState<{[key: string]: string}>({});
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
+  
+  const videoRefs = useRef<{[key: string]: HTMLVideoElement | null}>({});
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const statusRef = useRef<HTMLDivElement | null>(null);
 
   // Initialize intersection observer for lazy loading
   useEffect(() => {
-    observerRef.current = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
+    observerRef.current = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const video = entry.target as HTMLVideoElement;
-          const dataSrcWebm = video.getAttribute('data-src-webm');
-          const dataSrcMp4 = video.getAttribute('data-src-mp4');
-          if (dataSrcWebm && !video.src) {
-            // Check if browser supports webm
-            if (video.canPlayType('video/webm').replace(/no/, '')) {
-              video.src = dataSrcWebm;
-            } else if (dataSrcMp4) {
-              video.src = dataSrcMp4;
-            }
+          const dataSrc = video.getAttribute('data-src');
+          if (dataSrc && !video.src) {
+            video.src = dataSrc;
             video.load();
           }
         }
       });
-    }, {
-      threshold: 0.1
+    }, { 
+      threshold: 0.1,
+      rootMargin: '200px'
     });
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
+
+    // Observe all videos
+    videoData.forEach(({ id }) => {
+      const video = videoRefs.current[id];
+      if (video && observerRef.current) {
+        observerRef.current.observe(video);
       }
+    });
+
+    return () => {
+      observerRef.current?.disconnect();
     };
   }, []);
-  const toggleVideoPlayback = (index: number) => {
-    const video = videoRefs.current[index];
-    if (video) {
-      const isPlaying = playingVideos.has(index);
-      const newPlayingVideos = new Set(playingVideos);
-      if (isPlaying) {
-        video.pause();
-        newPlayingVideos.delete(index);
-      } else {
-        video.play().catch(() => {
-          // Handle autoplay restrictions
-        });
-        newPlayingVideos.add(index);
+
+  // Initialize muted states
+  useEffect(() => {
+    const initialMuted: {[key: string]: boolean} = {};
+    videoData.forEach(({ id }) => {
+      initialMuted[id] = true; // Start muted
+    });
+    setMutedStates(initialMuted);
+  }, []);
+
+  const announceStatus = (message: string) => {
+    if (statusRef.current) {
+      statusRef.current.textContent = message;
+    }
+  };
+
+  const pauseAllOthers = (exceptId: string) => {
+    videoData.forEach(({ id }) => {
+      if (id !== exceptId) {
+        const video = videoRefs.current[id];
+        if (video && !video.paused) {
+          video.pause();
+          setPlayingStates(prev => ({ ...prev, [id]: false }));
+        }
       }
-      setPlayingVideos(newPlayingVideos);
-    }
-  };
-  const handleVideoHover = (index: number, isHovering: boolean) => {
-    setHoveredIndex(isHovering ? index : null);
-  };
-  const handleDoubleTap = (index: number) => {
-    const now = Date.now();
-    const lastTap = lastTapTime[index] || 0;
-    if (now - lastTap < 300) {
-      // Double tap detected
-      toggleVideoPlayback(index);
-    }
-    setLastTapTime({
-      ...lastTapTime,
-      [index]: now
     });
   };
-  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggleVideoPlayback(index);
+
+  const togglePlay = async (id: string) => {
+    const video = videoRefs.current[id];
+    if (!video) return;
+
+    const videoInfo = videoData.find(v => v.id === id);
+    const isPlaying = playingStates[id];
+    
+    if (isPlaying) {
+      video.pause();
+      setPlayingStates(prev => ({ ...prev, [id]: false }));
+      setCurrentlyPlaying(null);
+      announceStatus(`Paused: ${videoInfo?.title}`);
+    } else {
+      try {
+        setLoadingStates(prev => ({ ...prev, [id]: true }));
+        pauseAllOthers(id);
+        
+        await video.play();
+        setPlayingStates(prev => ({ ...prev, [id]: true }));
+        setCurrentlyPlaying(id);
+        setErrorStates(prev => ({ ...prev, [id]: '' }));
+        announceStatus(`Now playing: ${videoInfo?.title}`);
+      } catch (error) {
+        console.error(`Playback failed for ${id}:`, error);
+        setErrorStates(prev => ({ 
+          ...prev, 
+          [id]: 'Playback unavailable — tap to retry' 
+        }));
+        announceStatus(`Playback failed: ${videoInfo?.title}`);
+      } finally {
+        setLoadingStates(prev => ({ ...prev, [id]: false }));
+      }
     }
   };
-  const nextSlide = () => {
-    setCurrentSlide(prev => (prev + 1) % popularEdits.length);
+
+  const toggleMute = (id: string) => {
+    const video = videoRefs.current[id];
+    if (!video) return;
+
+    const newMuted = !mutedStates[id];
+    video.muted = newMuted;
+    setMutedStates(prev => ({ ...prev, [id]: newMuted }));
+    
+    const videoInfo = videoData.find(v => v.id === id);
+    announceStatus(`${newMuted ? 'Muted' : 'Unmuted'}: ${videoInfo?.title}`);
   };
-  const prevSlide = () => {
-    setCurrentSlide(prev => (prev - 1 + popularEdits.length) % popularEdits.length);
+
+  const retryVideo = (id: string) => {
+    const video = videoRefs.current[id];
+    const videoInfo = videoData.find(v => v.id === id);
+    if (!video || !videoInfo) return;
+
+    // Try low-res version first, then original
+    const currentSrc = video.src;
+    const newSrc = currentSrc === videoInfo.src ? videoInfo.lowResSrc : videoInfo.src;
+    
+    video.src = newSrc;
+    video.load();
+    setErrorStates(prev => ({ ...prev, [id]: '' }));
+    console.log(`Retrying video ${id} with ${newSrc}`);
   };
-  return;
+
+  const handleVideoError = (id: string, error: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    console.error(`Video error for ${id}:`, error);
+    const videoInfo = videoData.find(v => v.id === id);
+    setErrorStates(prev => ({ 
+      ...prev, 
+      [id]: 'Playback unavailable — tap to retry' 
+    }));
+    setPlayingStates(prev => ({ ...prev, [id]: false }));
+    announceStatus(`Error loading: ${videoInfo?.title}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, action: () => void) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      action();
+    }
+  };
+
+  return (
+    <section className="py-20 px-6 relative">
+      {/* Screen reader status announcements */}
+      <div 
+        ref={statusRef}
+        className="sr-only" 
+        aria-live="polite" 
+        aria-atomic="true"
+      />
+      
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            Popular Edits
+          </h2>
+          <p className="text-xl text-white/80 max-w-3xl mx-auto">
+            Showcase of our most requested editing styles
+          </p>
+        </div>
+
+        {/* Video Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {videoData.map(({ id, title, description, src, lowResSrc, poster }) => (
+            <div key={id} className="group relative">
+              {/* 1:1 Aspect Ratio Container */}
+              <div className="relative w-full aspect-square overflow-hidden rounded-xl bg-gray-900">
+                {/* Video Element */}
+                <video
+                  ref={(el) => {
+                    videoRefs.current[id] = el;
+                  }}
+                  className="w-full h-full object-cover"
+                  data-src={src}
+                  poster={poster}
+                  preload="metadata"
+                  playsInline
+                  muted
+                  onError={(e) => handleVideoError(id, e)}
+                  onPlay={() => setPlayingStates(prev => ({ ...prev, [id]: true }))}
+                  onPause={() => setPlayingStates(prev => ({ ...prev, [id]: false }))}
+                  aria-label={`${title} video preview`}
+                />
+
+                {/* Error Banner */}
+                {errorStates[id] && (
+                  <div className="absolute inset-x-4 top-4 bg-red-600/90 text-white p-3 rounded-lg flex items-center justify-between text-sm">
+                    <span>{errorStates[id]}</span>
+                    <button
+                      onClick={() => retryVideo(id)}
+                      className="ml-2 px-2 py-1 bg-white/20 rounded hover:bg-white/30 transition-colors"
+                      aria-label={`Retry loading ${title}`}
+                    >
+                      Retry
+                    </button>
+                  </div>
+                )}
+
+                {/* Control Buttons - Bottom Right */}
+                <div className="absolute bottom-4 right-4 flex flex-col gap-2">
+                  {/* Mute/Unmute Button */}
+                  <button
+                    onClick={() => toggleMute(id)}
+                    onKeyDown={(e) => handleKeyDown(e, () => toggleMute(id))}
+                    className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    aria-label={`${mutedStates[id] ? 'Unmute' : 'Mute'} ${title}`}
+                  >
+                    {mutedStates[id] ? (
+                      <VolumeX className="w-5 h-5" />
+                    ) : (
+                      <Volume2 className="w-5 h-5" />
+                    )}
+                  </button>
+
+                  {/* Play/Pause Button */}
+                  <button
+                    onClick={() => togglePlay(id)}
+                    onKeyDown={(e) => handleKeyDown(e, () => togglePlay(id))}
+                    disabled={loadingStates[id]}
+                    className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-label={`${playingStates[id] ? 'Pause' : 'Play'} ${title}`}
+                  >
+                    {loadingStates[id] ? (
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : playingStates[id] ? (
+                      <Pause className="w-5 h-5" />
+                    ) : (
+                      <Play className="w-5 h-5 ml-0.5" />
+                    )}
+                  </button>
+                </div>
+
+                {/* Video Info Overlay - Bottom Left */}
+                <div className="absolute bottom-4 left-4 text-white">
+                  <h3 className="font-semibold text-sm mb-1">{title}</h3>
+                  <p className="text-xs text-white/80 line-clamp-2">{description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @media (prefers-reduced-motion: reduce) {
+            .animate-spin {
+              animation: none;
+            }
+            .transition-all, .transition-colors {
+              transition: none;
+            }
+          }
+          
+          .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+        `
+      }} />
+    </section>
+  );
 };
