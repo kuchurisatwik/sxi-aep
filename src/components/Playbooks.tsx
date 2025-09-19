@@ -22,28 +22,28 @@ const videoData = [{
   description: "Explosive action sequence with cinematic fire effects",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757733019/salaar_na6x3x.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757733019/salaar_na6x3x.mp4",
-  poster: "/assets/proj1-poster.jpg"
+  poster: "/src/assets/salaar-poster.jpg"
 }, {
   id: "rrr",
   title: "Reel Pack — Action",
   description: "High-energy vertical cuts with dynamic transitions",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732999/rrr_ykw8gc.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757732999/rrr_ykw8gc.mp4",
-  poster: "/assets/proj2-poster.jpg"
+  poster: "/src/assets/rrr-poster.jpg"
 }, {
   id: "arjun",
   title: "Celebrity Style Cut",
   description: "Premium editing with celebrity-grade color grading",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757647059/ARJUN_REDDY_frie4j.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757647059/ARJUN_REDDY_frie4j.mp4",
-  poster: "/assets/proj3-poster.jpg"
+  poster: "/src/assets/ar-poster.jpg"
 }, {
   id: "kalki",
   title: "Storm Sequence",
   description: "Dramatic weather effects with intense color grading",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732980/kalki_hbxnol.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757732980/kalki_hbxnol.mp4",
-  poster: "/assets/proj4-poster.jpg"
+  poster: "/src/assets/kalki-poster.jpg"
 }];
 export const Playbooks = () => {
   const [playingStates, setPlayingStates] = useState<{
@@ -278,8 +278,8 @@ export const Playbooks = () => {
             lowResSrc,
             poster
           }) => <div key={id} className="group relative flex-shrink-0">
-                {/* Larger 1:1 Aspect Ratio Container */}
-                <div className="relative w-80 h-80 overflow-hidden rounded-xl bg-gray-900">
+                {/* Larger 1:1 Aspect Ratio Container - Matches CC mobile sizing */}
+                <div className="relative w-80 h-80 sm:w-80 sm:h-80 overflow-hidden rounded-xl bg-gray-900">
                   {/* Video Element */}
                   <video ref={el => {
                 videoRefs.current[id] = el;
@@ -358,10 +358,10 @@ export const Playbooks = () => {
 
           @media (max-width: 640px) {
             .w-80 {
-              width: 14rem;
+              width: 20rem; /* Matches CC section mobile sizing (h-80 = 320px) */
             }
             .h-80 {
-              height: 14rem;
+              height: 20rem; /* Matches CC section mobile sizing (h-80 = 320px) */
             }
           }
         `
