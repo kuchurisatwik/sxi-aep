@@ -278,8 +278,8 @@ export const Playbooks = () => {
             lowResSrc,
             poster
           }) => <div key={id} className="group relative flex-shrink-0">
-                {/* Larger 1:1 Aspect Ratio Container - Matches CC mobile sizing */}
-                <div className="relative w-80 h-80 sm:w-80 sm:h-80 overflow-hidden rounded-xl bg-gray-900">
+                {/* Video Container - Matches CC section mobile sizing (h-80 = 320px) */}
+                <div className="relative w-80 h-80 popular-video-card overflow-hidden rounded-xl bg-gray-900">
                   {/* Video Element */}
                   <video ref={el => {
                 videoRefs.current[id] = el;
@@ -356,12 +356,11 @@ export const Playbooks = () => {
             }
           }
 
+          /* Mobile sizing to match CC section - copying exact h-80 behavior from ColorCorrections.tsx */
           @media (max-width: 640px) {
-            .w-80 {
-              width: 20rem; /* Matches CC section mobile sizing (h-80 = 320px) */
-            }
-            .h-80 {
-              height: 20rem; /* Matches CC section mobile sizing (h-80 = 320px) */
+            .popular-video-card {
+              width: 20rem; /* Matches CC section h-80 (320px) height */
+              height: 20rem; /* Matches CC section h-80 (320px) height */
             }
           }
         `
