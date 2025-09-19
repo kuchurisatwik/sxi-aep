@@ -280,16 +280,28 @@ export const Playbooks = () => {
           }) => <div key={id} className="group relative flex-shrink-0">
                 {/* Video Container - Matches CC section mobile sizing (h-80 = 320px) */}
                 <div className="relative w-80 h-80 popular-video-card overflow-hidden rounded-xl bg-gray-900">
-                  {/* Video Element */}
-                  <video ref={el => {
-                videoRefs.current[id] = el;
-              }} className="w-full h-full object-cover" data-src={src} poster={poster} preload="metadata" playsInline muted onError={e => handleVideoError(id, e)} onPlay={() => setPlayingStates(prev => ({
-                ...prev,
-                [id]: true
-              }))} onPause={() => setPlayingStates(prev => ({
-                ...prev,
-                [id]: false
-              }))} aria-label={`${title} video preview`} />
+                  {/* Video Element with responsive poster */}
+                  <video 
+                    ref={el => {
+                      videoRefs.current[id] = el;
+                    }} 
+                    className="w-full h-full object-cover object-center" 
+                    data-src={src} 
+                    poster={poster} 
+                    preload="metadata" 
+                    playsInline 
+                    muted 
+                    onError={e => handleVideoError(id, e)} 
+                    onPlay={() => setPlayingStates(prev => ({
+                      ...prev,
+                      [id]: true
+                    }))} 
+                    onPause={() => setPlayingStates(prev => ({
+                      ...prev,
+                      [id]: false
+                    }))} 
+                    aria-label={`${title} video preview`} 
+                  />
 
                   {/* Error Banner */}
                   {errorStates[id] && <div className="absolute inset-x-4 top-4 bg-red-600/90 text-white p-3 rounded-lg flex items-center justify-between text-sm">
@@ -361,6 +373,21 @@ export const Playbooks = () => {
             .popular-video-card {
               width: 20rem; /* Matches CC section h-80 (320px) height */
               height: 20rem; /* Matches CC section h-80 (320px) height */
+            }
+          }
+
+          /* Ensure poster images display properly on all devices */
+          .popular-video-card video {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+
+          /* Responsive poster display */
+          @media (max-width: 768px) {
+            .popular-video-card video {
+              object-fit: cover;
+              object-position: center;
             }
           }
         `
