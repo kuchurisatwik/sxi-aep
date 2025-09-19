@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, ChevronLeft, ChevronRight } from "lucide-react";
 
 /* 
   POPULAR EDITS - Fresh Implementation
@@ -223,68 +223,109 @@ export const Playbooks = () => {
       action();
     }
   };
-  return <section className="py-20 px-6 relative">
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -320, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 320, behavior: 'smooth' });
+    }
+  };
+
+  return <section className="content-layer py-20 px-6 relative">
       {/* Screen reader status announcements */}
       <div ref={statusRef} className="sr-only" aria-live="polite" aria-atomic="true" />
       
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-            Popular Edits
+          <h2 className="font-display text-4xl lg:text-6xl font-black text-white mb-4">
+            POPULAR <span className="text-firestorm">EDITS</span>
           </h2>
-          <p className="text-xl text-white/80 max-w-3xl mx-auto">
+          <p className="text-white/80 font-heading text-lg">
             Showcase of our most requested editing styles
           </p>
         </div>
 
-        {/* Video Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {videoData.map(({
-          id,
-          title,
-          description,
-          src,
-          lowResSrc,
-          poster
-        }) => <div key={id} className="group relative">
-              {/* 1:1 Aspect Ratio Container */}
-              <div className="relative w-full aspect-square overflow-hidden rounded-xl bg-gray-900">
-                {/* Video Element */}
-                <video ref={el => {
-              videoRefs.current[id] = el;
-            }} className="w-full h-full object-cover" data-src={src} poster={poster} preload="metadata" playsInline muted onError={e => handleVideoError(id, e)} onPlay={() => setPlayingStates(prev => ({
-              ...prev,
-              [id]: true
-            }))} onPause={() => setPlayingStates(prev => ({
-              ...prev,
-              [id]: false
-            }))} aria-label={`${title} video preview`} />
+        {/* Black Ice Blur Wrapper with Horizontal Scroll */}
+        <div className="relative bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-8 overflow-hidden">
+          {/* Navigation Arrows */}
+          <button 
+            onClick={scrollLeft}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
+            aria-label="Scroll left"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          
+          <button 
+            onClick={scrollRight}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
+            aria-label="Scroll right"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
 
-                {/* Error Banner */}
-                {errorStates[id] && <div className="absolute inset-x-4 top-4 bg-red-600/90 text-white p-3 rounded-lg flex items-center justify-between text-sm">
-                    <span>{errorStates[id]}</span>
-                    <button onClick={() => retryVideo(id)} className="ml-2 px-2 py-1 bg-white/20 rounded hover:bg-white/30 transition-colors" aria-label={`Retry loading ${title}`}>
-                      Retry
+          {/* Horizontal Scrolling Container */}
+          <div 
+            ref={scrollRef}
+            className="flex gap-6 overflow-x-auto scrollbar-hide pb-4"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {videoData.map(({
+            id,
+            title,
+            description,
+            src,
+            lowResSrc,
+            poster
+          }) => <div key={id} className="group relative flex-shrink-0">
+                {/* Larger 1:1 Aspect Ratio Container */}
+                <div className="relative w-80 h-80 overflow-hidden rounded-xl bg-gray-900">
+                  {/* Video Element */}
+                  <video ref={el => {
+                videoRefs.current[id] = el;
+              }} className="w-full h-full object-cover" data-src={src} poster={poster} preload="metadata" playsInline muted onError={e => handleVideoError(id, e)} onPlay={() => setPlayingStates(prev => ({
+                ...prev,
+                [id]: true
+              }))} onPause={() => setPlayingStates(prev => ({
+                ...prev,
+                [id]: false
+              }))} aria-label={`${title} video preview`} />
+
+                  {/* Error Banner */}
+                  {errorStates[id] && <div className="absolute inset-x-4 top-4 bg-red-600/90 text-white p-3 rounded-lg flex items-center justify-between text-sm">
+                      <span>{errorStates[id]}</span>
+                      <button onClick={() => retryVideo(id)} className="ml-2 px-2 py-1 bg-white/20 rounded hover:bg-white/30 transition-colors" aria-label={`Retry loading ${title}`}>
+                        Retry
+                      </button>
+                    </div>}
+
+                  {/* Control Buttons - Bottom Right */}
+                  <div className="absolute bottom-4 right-4 flex flex-col gap-2">
+                    {/* Mute/Unmute Button */}
+                    <button onClick={() => toggleMute(id)} onKeyDown={e => handleKeyDown(e, () => toggleMute(id))} className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label={`${mutedStates[id] ? 'Unmute' : 'Mute'} ${title}`}>
+                      {mutedStates[id] ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                     </button>
-                  </div>}
 
-                {/* Control Buttons - Bottom Right */}
-                <div className="absolute bottom-4 right-4 flex flex-col gap-2">
-                  {/* Mute/Unmute Button */}
-                  <button onClick={() => toggleMute(id)} onKeyDown={e => handleKeyDown(e, () => toggleMute(id))} className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label={`${mutedStates[id] ? 'Unmute' : 'Mute'} ${title}`}>
-                    {mutedStates[id] ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-                  </button>
+                    {/* Play/Pause Button */}
+                    <button onClick={() => togglePlay(id)} onKeyDown={e => handleKeyDown(e, () => togglePlay(id))} disabled={loadingStates[id]} className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 disabled:cursor-not-allowed" aria-label={`${playingStates[id] ? 'Pause' : 'Play'} ${title}`}>
+                      {loadingStates[id] ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : playingStates[id] ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
+                    </button>
+                  </div>
 
-                  {/* Play/Pause Button */}
-                  <button onClick={() => togglePlay(id)} onKeyDown={e => handleKeyDown(e, () => togglePlay(id))} disabled={loadingStates[id]} className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 disabled:cursor-not-allowed" aria-label={`${playingStates[id] ? 'Pause' : 'Play'} ${title}`}>
-                    {loadingStates[id] ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : playingStates[id] ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
-                  </button>
+                  {/* Video Info Overlay - Bottom Left */}
+                  <div className="absolute bottom-4 left-4">
+                    <h3 className="font-heading font-bold text-white text-sm mb-1">{title}</h3>
+                    <p className="text-white/70 text-xs line-clamp-2">{description}</p>
+                  </div>
                 </div>
-
-                {/* Video Info Overlay - Bottom Left */}
-                
-              </div>
-            </div>)}
+              </div>)}
+          </div>
         </div>
       </div>
 
@@ -304,6 +345,33 @@ export const Playbooks = () => {
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+          }
+
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+          
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+
+          @media (max-width: 768px) {
+            .w-80 {
+              width: 16rem;
+            }
+            .h-80 {
+              height: 16rem;
+            }
+          }
+
+          @media (max-width: 640px) {
+            .w-80 {
+              width: 14rem;
+            }
+            .h-80 {
+              height: 14rem;
+            }
           }
         `
     }} />
