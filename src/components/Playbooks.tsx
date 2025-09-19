@@ -224,19 +224,22 @@ export const Playbooks = () => {
     }
   };
   const scrollRef = useRef<HTMLDivElement>(null);
-
   const scrollLeft = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -320, behavior: 'smooth' });
+      scrollRef.current.scrollBy({
+        left: -320,
+        behavior: 'smooth'
+      });
     }
   };
-
   const scrollRight = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 320, behavior: 'smooth' });
+      scrollRef.current.scrollBy({
+        left: 320,
+        behavior: 'smooth'
+      });
     }
   };
-
   return <section className="content-layer py-20 px-6 relative">
       {/* Screen reader status announcements */}
       <div ref={statusRef} className="sr-only" aria-live="polite" aria-atomic="true" />
@@ -254,28 +257,19 @@ export const Playbooks = () => {
         {/* Black Ice Blur Wrapper with Horizontal Scroll */}
         <div className="relative bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-8 overflow-hidden">
           {/* Navigation Arrows */}
-          <button 
-            onClick={scrollLeft}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
-            aria-label="Scroll left"
-          >
+          <button onClick={scrollLeft} className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Scroll left">
             <ChevronLeft className="w-6 h-6" />
           </button>
           
-          <button 
-            onClick={scrollRight}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50"
-            aria-label="Scroll right"
-          >
+          <button onClick={scrollRight} className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Scroll right">
             <ChevronRight className="w-6 h-6" />
           </button>
 
           {/* Horizontal Scrolling Container */}
-          <div 
-            ref={scrollRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide pb-4"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
+          <div ref={scrollRef} className="flex gap-6 overflow-x-auto scrollbar-hide pb-4" style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none'
+        }}>
             {videoData.map(({
             id,
             title,
@@ -319,10 +313,7 @@ export const Playbooks = () => {
                   </div>
 
                   {/* Video Info Overlay - Bottom Left */}
-                  <div className="absolute bottom-4 left-4">
-                    <h3 className="font-heading font-bold text-white text-sm mb-1">{title}</h3>
-                    <p className="text-white/70 text-xs line-clamp-2">{description}</p>
-                  </div>
+                  
                 </div>
               </div>)}
           </div>
