@@ -22,28 +22,28 @@ const videoData = [{
   description: "Explosive action sequence with cinematic fire effects",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757733019/salaar_na6x3x.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757733019/salaar_na6x3x.mp4",
-  poster: "/src/assets/salaar-poster.jpg"
+  poster: "/src/assets/salaar-poster-new.jpg"
 }, {
   id: "rrr",
   title: "Reel Pack — Action",
   description: "High-energy vertical cuts with dynamic transitions",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732999/rrr_ykw8gc.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757732999/rrr_ykw8gc.mp4",
-  poster: "/src/assets/rrr-poster.jpg"
+  poster: "/src/assets/rrr-poster-new.jpg"
 }, {
   id: "arjun",
   title: "Celebrity Style Cut",
   description: "Premium editing with celebrity-grade color grading",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757647059/ARJUN_REDDY_frie4j.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757647059/ARJUN_REDDY_frie4j.mp4",
-  poster: "/src/assets/ar-poster.jpg"
+  poster: "/src/assets/ar-poster-new.jpg"
 }, {
   id: "kalki",
   title: "Storm Sequence",
   description: "Dramatic weather effects with intense color grading",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732980/kalki_hbxnol.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757732980/kalki_hbxnol.mp4",
-  poster: "/src/assets/kalki-poster.jpg"
+  poster: "/src/assets/kalki-poster-new.jpg"
 }];
 export const Playbooks = () => {
   const [playingStates, setPlayingStates] = useState<{
@@ -254,80 +254,166 @@ export const Playbooks = () => {
           </p>
         </div>
 
-        {/* Black Ice Blur Wrapper with Horizontal Scroll */}
+        {/* Black Ice Blur Wrapper - Responsive Layout */}
         <div className="relative bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-8 overflow-hidden">
-          {/* Navigation Arrows */}
-          <button onClick={scrollLeft} className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Scroll left">
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          
-          <button onClick={scrollRight} className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Scroll right">
-            <ChevronRight className="w-6 h-6" />
-          </button>
+          {/* Desktop: Horizontal Scroll */}
+          <div className="hidden md:block">
+            {/* Navigation Arrows - Desktop only */}
+            <button onClick={scrollLeft} className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Scroll left">
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            
+            <button onClick={scrollRight} className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Scroll right">
+              <ChevronRight className="w-6 h-6" />
+            </button>
 
-          {/* Horizontal Scrolling Container */}
-          <div ref={scrollRef} className="flex gap-6 overflow-x-auto scrollbar-hide pb-4" style={{
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none'
-        }}>
-            {videoData.map(({
-            id,
-            title,
-            description,
-            src,
-            lowResSrc,
-            poster
-          }) => <div key={id} className="group relative flex-shrink-0">
-                {/* Video Container - Matches CC section mobile sizing (h-80 = 320px) */}
-                <div className="relative w-80 h-80 popular-video-card overflow-hidden rounded-xl bg-gray-900">
-                  {/* Video Element with responsive poster */}
-                  <video 
-                    ref={el => {
-                      videoRefs.current[id] = el;
-                    }} 
-                    className="w-full h-full object-cover object-center" 
-                    data-src={src} 
-                    poster={poster} 
-                    preload="metadata" 
-                    playsInline 
-                    muted 
-                    onError={e => handleVideoError(id, e)} 
-                    onPlay={() => setPlayingStates(prev => ({
-                      ...prev,
-                      [id]: true
-                    }))} 
-                    onPause={() => setPlayingStates(prev => ({
-                      ...prev,
-                      [id]: false
-                    }))} 
-                    aria-label={`${title} video preview`} 
-                  />
+            {/* Horizontal Scrolling Container - Desktop */}
+            <div ref={scrollRef} className="flex gap-6 overflow-x-auto scrollbar-hide pb-4" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
+            }}>
+              {videoData.map(({
+                id,
+                title,
+                description,
+                src,
+                lowResSrc,
+                poster
+              }) => (
+                <div key={id} className="group relative flex-shrink-0">
+                  {/* Video Container - Desktop */}
+                  <div className="relative w-80 h-80 popular-video-card overflow-hidden rounded-xl bg-gray-900">
+                    {/* Cover Photo Overlay - Stable Implementation */}
+                    <div 
+                      className={`absolute inset-0 bg-cover bg-center bg-no-repeat z-10 transition-opacity duration-300 ${playingStates[id] ? 'opacity-0' : 'opacity-100'}`}
+                      style={{ backgroundImage: `url(${poster})` }}
+                    />
+                    
+                    {/* Video Element */}
+                    <video 
+                      ref={el => {
+                        videoRefs.current[id] = el;
+                      }} 
+                      className="w-full h-full object-cover object-center" 
+                      data-src={src} 
+                      preload="metadata" 
+                      playsInline 
+                      muted 
+                      onError={e => handleVideoError(id, e)} 
+                      onPlay={() => setPlayingStates(prev => ({
+                        ...prev,
+                        [id]: true
+                      }))} 
+                      onPause={() => setPlayingStates(prev => ({
+                        ...prev,
+                        [id]: false
+                      }))} 
+                      aria-label={`${title} video preview`} 
+                    />
 
-                  {/* Error Banner */}
-                  {errorStates[id] && <div className="absolute inset-x-4 top-4 bg-red-600/90 text-white p-3 rounded-lg flex items-center justify-between text-sm">
-                      <span>{errorStates[id]}</span>
-                      <button onClick={() => retryVideo(id)} className="ml-2 px-2 py-1 bg-white/20 rounded hover:bg-white/30 transition-colors" aria-label={`Retry loading ${title}`}>
-                        Retry
+                    {/* Error Banner */}
+                    {errorStates[id] && (
+                      <div className="absolute inset-x-4 top-4 bg-red-600/90 text-white p-3 rounded-lg flex items-center justify-between text-sm z-20">
+                        <span>{errorStates[id]}</span>
+                        <button onClick={() => retryVideo(id)} className="ml-2 px-2 py-1 bg-white/20 rounded hover:bg-white/30 transition-colors" aria-label={`Retry loading ${title}`}>
+                          Retry
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Control Buttons - Bottom Right */}
+                    <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-20">
+                      {/* Mute/Unmute Button */}
+                      <button onClick={() => toggleMute(id)} onKeyDown={e => handleKeyDown(e, () => toggleMute(id))} className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label={`${mutedStates[id] ? 'Unmute' : 'Mute'} ${title}`}>
+                        {mutedStates[id] ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                       </button>
-                    </div>}
 
-                  {/* Control Buttons - Bottom Right */}
-                  <div className="absolute bottom-4 right-4 flex flex-col gap-2">
-                    {/* Mute/Unmute Button */}
-                    <button onClick={() => toggleMute(id)} onKeyDown={e => handleKeyDown(e, () => toggleMute(id))} className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label={`${mutedStates[id] ? 'Unmute' : 'Mute'} ${title}`}>
-                      {mutedStates[id] ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-                    </button>
-
-                    {/* Play/Pause Button */}
-                    <button onClick={() => togglePlay(id)} onKeyDown={e => handleKeyDown(e, () => togglePlay(id))} disabled={loadingStates[id]} className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 disabled:cursor-not-allowed" aria-label={`${playingStates[id] ? 'Pause' : 'Play'} ${title}`}>
-                      {loadingStates[id] ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : playingStates[id] ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
-                    </button>
+                      {/* Play/Pause Button */}
+                      <button onClick={() => togglePlay(id)} onKeyDown={e => handleKeyDown(e, () => togglePlay(id))} disabled={loadingStates[id]} className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 disabled:cursor-not-allowed" aria-label={`${playingStates[id] ? 'Pause' : 'Play'} ${title}`}>
+                        {loadingStates[id] ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : playingStates[id] ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
+                      </button>
+                    </div>
                   </div>
-
-                  {/* Video Info Overlay - Bottom Left */}
-                  
                 </div>
-              </div>)}
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile: Grid Layout - Matches CC Section */}
+          <div className="md:hidden">
+            <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
+              {videoData.map(({
+                id,
+                title,
+                description,
+                src,
+                lowResSrc,
+                poster
+              }) => (
+                <div key={id} className="group relative w-full">
+                  {/* Video Container - Mobile - Matches CC card sizing exactly */}
+                  <div className="relative w-full h-80 popular-video-card overflow-hidden rounded-xl bg-gray-900">
+                    {/* Cover Photo Overlay - Mobile */}
+                    <div 
+                      className={`absolute inset-0 bg-cover bg-center bg-no-repeat z-10 transition-opacity duration-300 ${playingStates[id] ? 'opacity-0' : 'opacity-100'}`}
+                      style={{ backgroundImage: `url(${poster})` }}
+                    />
+                    
+                    {/* Video Element - Mobile */}
+                    <video 
+                      ref={el => {
+                        videoRefs.current[id] = el;
+                      }} 
+                      className="w-full h-full object-cover object-center" 
+                      data-src={src} 
+                      preload="metadata" 
+                      playsInline 
+                      muted 
+                      onError={e => handleVideoError(id, e)} 
+                      onPlay={() => setPlayingStates(prev => ({
+                        ...prev,
+                        [id]: true
+                      }))} 
+                      onPause={() => setPlayingStates(prev => ({
+                        ...prev,
+                        [id]: false
+                      }))} 
+                      aria-label={`${title} video preview`} 
+                    />
+
+                    {/* Error Banner - Mobile */}
+                    {errorStates[id] && (
+                      <div className="absolute inset-x-4 top-4 bg-red-600/90 text-white p-3 rounded-lg flex items-center justify-between text-sm z-20">
+                        <span>{errorStates[id]}</span>
+                        <button onClick={() => retryVideo(id)} className="ml-2 px-2 py-1 bg-white/20 rounded hover:bg-white/30 transition-colors" aria-label={`Retry loading ${title}`}>
+                          Retry
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Control Buttons - Mobile - Bottom Right */}
+                    <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-20">
+                      {/* Mute/Unmute Button */}
+                      <button onClick={() => toggleMute(id)} onKeyDown={e => handleKeyDown(e, () => toggleMute(id))} className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label={`${mutedStates[id] ? 'Unmute' : 'Mute'} ${title}`}>
+                        {mutedStates[id] ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                      </button>
+
+                      {/* Play/Pause Button */}
+                      <button onClick={() => togglePlay(id)} onKeyDown={e => handleKeyDown(e, () => togglePlay(id))} disabled={loadingStates[id]} className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 disabled:cursor-not-allowed" aria-label={`${playingStates[id] ? 'Pause' : 'Play'} ${title}`}>
+                        {loadingStates[id] ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : playingStates[id] ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
+                      </button>
+                    </div>
+
+                    {/* Video Title - Mobile */}
+                    <div className="absolute bottom-4 left-4 z-20">
+                      <span className="bg-firestorm-red text-white px-3 py-1 rounded font-heading font-bold text-sm shadow-ember">
+                        {title.toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -359,36 +445,34 @@ export const Playbooks = () => {
             display: none;
           }
 
-          @media (max-width: 768px) {
-            .w-80 {
-              width: 16rem;
-            }
-            .h-80 {
-              height: 16rem;
-            }
-          }
-
-          /* Mobile sizing to match CC section - copying exact h-80 behavior from ColorCorrections.tsx */
-          @media (max-width: 640px) {
+          /* Mobile layout - matches CC section grid layout exactly */
+          @media (max-width: 767px) {
             .popular-video-card {
-              width: 20rem; /* Matches CC section h-80 (320px) height */
-              height: 20rem; /* Matches CC section h-80 (320px) height */
+              width: 100% !important; /* Full width on mobile like CC cards */
+              height: 20rem; /* Matches CC section h-80 (320px) height exactly */
             }
           }
 
-          /* Ensure poster images display properly on all devices */
-          .popular-video-card video {
+          /* Desktop sizing */
+          @media (min-width: 768px) {
+            .popular-video-card {
+              width: 20rem; /* 320px on desktop */
+              height: 20rem; /* 320px on desktop */
+            }
+          }
+
+          /* Stable cover photo overlay implementation */
+          .popular-video-card .cover-overlay {
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            transition: opacity 0.3s ease-in-out;
           }
 
-          /* Responsive poster display */
-          @media (max-width: 768px) {
-            .popular-video-card video {
-              object-fit: cover;
-              object-position: center;
-            }
+          /* Video element styling */
+          .popular-video-card video {
+            object-fit: cover;
+            object-position: center;
           }
         `
     }} />
