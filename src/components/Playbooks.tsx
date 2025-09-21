@@ -333,9 +333,9 @@ export const Playbooks = () => {
               src,
               lowResSrc,
               poster
-            }) => <div key={id} className="group relative flex justify-center">
-                  {/* Video Container - Mobile - 1:1 Ratio */}
-                  <div className="relative w-80 h-80 popular-video-card overflow-hidden rounded-xl bg-gray-900">
+            }) => <div key={id} className="group relative w-full">
+                  {/* Video Container - Mobile - Matches CC card sizing exactly */}
+                  <div className="relative w-full h-80 popular-video-card overflow-hidden rounded-xl bg-gray-900">
                     {/* Cover Photo Overlay - Mobile */}
                     <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat z-10 transition-opacity duration-300 ${playingStates[id] ? 'opacity-0' : 'opacity-100'}`} style={{
                   backgroundImage: `url(${poster})`
@@ -373,6 +373,10 @@ export const Playbooks = () => {
                       </button>
                     </div>
 
+                    {/* Video Title - Mobile */}
+                    <div className="absolute bottom-4 left-4 z-20">
+                      
+                    </div>
                   </div>
                 </div>)}
             </div>
@@ -407,11 +411,11 @@ export const Playbooks = () => {
             display: none;
           }
 
-          /* Mobile layout - 1:1 ratio maintained */
+          /* Mobile layout - matches CC section grid layout exactly */
           @media (max-width: 767px) {
             .popular-video-card {
-              width: 20rem !important; /* 320px - matches height for 1:1 ratio */
-              height: 20rem; /* 320px - maintains video screen size */
+              width: 100% !important; /* Full width on mobile like CC cards */
+              height: 20rem; /* Matches CC section h-80 (320px) height exactly */
             }
           }
 
