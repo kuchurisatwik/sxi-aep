@@ -269,42 +269,57 @@ export const Playbooks = () => {
 
             {/* Horizontal Scrolling Container - Desktop */}
             <div ref={scrollRef} className="flex gap-6 overflow-x-auto scrollbar-hide pb-4" style={{
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
-          }}>
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
+            }}>
               {videoData.map(({
-              id,
-              title,
-              description,
-              src,
-              lowResSrc,
-              poster
-            }) => <div key={id} className="group relative flex-shrink-0">
+                id,
+                title,
+                description,
+                src,
+                lowResSrc,
+                poster
+              }) => (
+                <div key={id} className="group relative flex-shrink-0">
                   {/* Video Container - Desktop */}
                   <div className="relative w-80 h-80 popular-video-card overflow-hidden rounded-xl bg-gray-900">
                     {/* Cover Photo Overlay - Stable Implementation */}
-                    <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat z-10 transition-opacity duration-300 ${playingStates[id] ? 'opacity-0' : 'opacity-100'}`} style={{
-                  backgroundImage: `url(${poster})`
-                }} />
+                    <div 
+                      className={`absolute inset-0 bg-cover bg-center bg-no-repeat z-10 transition-opacity duration-300 ${playingStates[id] ? 'opacity-0' : 'opacity-100'}`}
+                      style={{ backgroundImage: `url(${poster})` }}
+                    />
                     
                     {/* Video Element */}
-                    <video ref={el => {
-                  videoRefs.current[id] = el;
-                }} className="w-full h-full object-cover object-center" data-src={src} preload="metadata" playsInline muted onError={e => handleVideoError(id, e)} onPlay={() => setPlayingStates(prev => ({
-                  ...prev,
-                  [id]: true
-                }))} onPause={() => setPlayingStates(prev => ({
-                  ...prev,
-                  [id]: false
-                }))} aria-label={`${title} video preview`} />
+                    <video 
+                      ref={el => {
+                        videoRefs.current[id] = el;
+                      }} 
+                      className="w-full h-full object-cover object-center" 
+                      data-src={src} 
+                      preload="metadata" 
+                      playsInline 
+                      muted 
+                      onError={e => handleVideoError(id, e)} 
+                      onPlay={() => setPlayingStates(prev => ({
+                        ...prev,
+                        [id]: true
+                      }))} 
+                      onPause={() => setPlayingStates(prev => ({
+                        ...prev,
+                        [id]: false
+                      }))} 
+                      aria-label={`${title} video preview`} 
+                    />
 
                     {/* Error Banner */}
-                    {errorStates[id] && <div className="absolute inset-x-4 top-4 bg-red-600/90 text-white p-3 rounded-lg flex items-center justify-between text-sm z-20">
+                    {errorStates[id] && (
+                      <div className="absolute inset-x-4 top-4 bg-red-600/90 text-white p-3 rounded-lg flex items-center justify-between text-sm z-20">
                         <span>{errorStates[id]}</span>
                         <button onClick={() => retryVideo(id)} className="ml-2 px-2 py-1 bg-white/20 rounded hover:bg-white/30 transition-colors" aria-label={`Retry loading ${title}`}>
                           Retry
                         </button>
-                      </div>}
+                      </div>
+                    )}
 
                     {/* Control Buttons - Bottom Right */}
                     <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-20">
@@ -319,7 +334,8 @@ export const Playbooks = () => {
                       </button>
                     </div>
                   </div>
-                </div>)}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -327,38 +343,53 @@ export const Playbooks = () => {
           <div className="md:hidden">
             <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
               {videoData.map(({
-              id,
-              title,
-              description,
-              src,
-              lowResSrc,
-              poster
-            }) => <div key={id} className="group relative w-full">
+                id,
+                title,
+                description,
+                src,
+                lowResSrc,
+                poster
+              }) => (
+                <div key={id} className="group relative w-full">
                   {/* Video Container - Mobile - Matches CC card sizing exactly */}
                   <div className="relative w-full h-80 popular-video-card overflow-hidden rounded-xl bg-gray-900">
                     {/* Cover Photo Overlay - Mobile */}
-                    <div className={`absolute inset-0 bg-cover bg-center bg-no-repeat z-10 transition-opacity duration-300 ${playingStates[id] ? 'opacity-0' : 'opacity-100'}`} style={{
-                  backgroundImage: `url(${poster})`
-                }} />
+                    <div 
+                      className={`absolute inset-0 bg-cover bg-center bg-no-repeat z-10 transition-opacity duration-300 ${playingStates[id] ? 'opacity-0' : 'opacity-100'}`}
+                      style={{ backgroundImage: `url(${poster})` }}
+                    />
                     
                     {/* Video Element - Mobile */}
-                    <video ref={el => {
-                  videoRefs.current[id] = el;
-                }} className="w-full h-full object-cover object-center" data-src={src} preload="metadata" playsInline muted onError={e => handleVideoError(id, e)} onPlay={() => setPlayingStates(prev => ({
-                  ...prev,
-                  [id]: true
-                }))} onPause={() => setPlayingStates(prev => ({
-                  ...prev,
-                  [id]: false
-                }))} aria-label={`${title} video preview`} />
+                    <video 
+                      ref={el => {
+                        videoRefs.current[id] = el;
+                      }} 
+                      className="w-full h-full object-cover object-center" 
+                      data-src={src} 
+                      preload="metadata" 
+                      playsInline 
+                      muted 
+                      onError={e => handleVideoError(id, e)} 
+                      onPlay={() => setPlayingStates(prev => ({
+                        ...prev,
+                        [id]: true
+                      }))} 
+                      onPause={() => setPlayingStates(prev => ({
+                        ...prev,
+                        [id]: false
+                      }))} 
+                      aria-label={`${title} video preview`} 
+                    />
 
                     {/* Error Banner - Mobile */}
-                    {errorStates[id] && <div className="absolute inset-x-4 top-4 bg-red-600/90 text-white p-3 rounded-lg flex items-center justify-between text-sm z-20">
+                    {errorStates[id] && (
+                      <div className="absolute inset-x-4 top-4 bg-red-600/90 text-white p-3 rounded-lg flex items-center justify-between text-sm z-20">
                         <span>{errorStates[id]}</span>
                         <button onClick={() => retryVideo(id)} className="ml-2 px-2 py-1 bg-white/20 rounded hover:bg-white/30 transition-colors" aria-label={`Retry loading ${title}`}>
                           Retry
                         </button>
-                      </div>}
+                      </div>
+                    )}
 
                     {/* Control Buttons - Mobile - Bottom Right */}
                     <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-20">
@@ -375,10 +406,13 @@ export const Playbooks = () => {
 
                     {/* Video Title - Mobile */}
                     <div className="absolute bottom-4 left-4 z-20">
-                      
+                      <span className="bg-firestorm-red text-white px-3 py-1 rounded font-heading font-bold text-sm shadow-ember">
+                        {title.toUpperCase()}
+                      </span>
                     </div>
                   </div>
-                </div>)}
+                </div>
+              ))}
             </div>
           </div>
         </div>
