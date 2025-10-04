@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, ChevronLeft, ChevronRight } from "lucide-react";
+import salaarPoster from "@/assets/salaar-poster-new.jpg";
+import rrrPoster from "@/assets/rrr-poster-new.jpg";
+import arPoster from "@/assets/ar-poster-new.jpg";
+import kalkiPoster from "@/assets/kalki-poster-new.jpg";
 
 /* 
   POPULAR EDITS - Fresh Implementation
@@ -22,28 +26,28 @@ const videoData = [{
   description: "Explosive action sequence with cinematic fire effects",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757733019/salaar_na6x3x.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757733019/salaar_na6x3x.mp4",
-  poster: "/src/assets/salaar-poster-new.jpg"
+  poster: salaarPoster
 }, {
   id: "rrr",
   title: "Reel Pack — Action",
   description: "High-energy vertical cuts with dynamic transitions",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732999/rrr_ykw8gc.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757732999/rrr_ykw8gc.mp4",
-  poster: "/src/assets/rrr-poster-new.jpg"
+  poster: rrrPoster
 }, {
   id: "arjun",
   title: "Celebrity Style Cut",
   description: "Premium editing with celebrity-grade color grading",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757647059/ARJUN_REDDY_frie4j.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757647059/ARJUN_REDDY_frie4j.mp4",
-  poster: "/src/assets/ar-poster-new.jpg"
+  poster: arPoster
 }, {
   id: "kalki",
   title: "Storm Sequence",
   description: "Dramatic weather effects with intense color grading",
   src: "https://res.cloudinary.com/dsod6wvvp/video/upload/v1757732980/kalki_hbxnol.mp4",
   lowResSrc: "https://res.cloudinary.com/dsod6wvvp/video/upload/w_480,f_auto,q_auto/v1757732980/kalki_hbxnol.mp4",
-  poster: "/src/assets/kalki-poster-new.jpg"
+  poster: kalkiPoster
 }];
 export const Playbooks = () => {
   const [playingStates, setPlayingStates] = useState<{
@@ -402,13 +406,6 @@ export const Playbooks = () => {
                       <button onClick={() => togglePlay(id)} onKeyDown={e => handleKeyDown(e, () => togglePlay(id))} disabled={loadingStates[id]} className="w-11 h-11 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 disabled:cursor-not-allowed" aria-label={`${playingStates[id] ? 'Pause' : 'Play'} ${title}`}>
                         {loadingStates[id] ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : playingStates[id] ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
                       </button>
-                    </div>
-
-                    {/* Video Title - Mobile */}
-                    <div className="absolute bottom-4 left-4 z-20">
-                      <span className="bg-firestorm-red text-white px-3 py-1 rounded font-heading font-bold text-sm shadow-ember">
-                        {title.toUpperCase()}
-                      </span>
                     </div>
                   </div>
                 </div>
