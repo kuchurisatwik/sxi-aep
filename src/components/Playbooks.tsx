@@ -286,7 +286,7 @@ export const Playbooks = () => {
               }) => (
                 <div key={id} className="group relative flex-shrink-0">
                   {/* Video Container - Desktop */}
-                  <div className="relative w-80 h-80 popular-video-card overflow-hidden rounded-xl bg-gray-900">
+                  <div className="relative w-80 h-96 popular-video-card overflow-hidden rounded-xl bg-gray-900">
                     {/* Cover Photo Overlay - Stable Implementation */}
                     <div 
                       className={`absolute inset-0 bg-cover bg-center bg-no-repeat z-10 transition-opacity duration-300 ${playingStates[id] ? 'opacity-0' : 'opacity-100'}`}
@@ -300,10 +300,10 @@ export const Playbooks = () => {
                       }} 
                       className="w-full h-full object-cover object-center" 
                       data-src={src} 
-                      preload="metadata" 
+                      preload="none" 
                       playsInline 
                       muted 
-                      onError={e => handleVideoError(id, e)} 
+                      onError={e => handleVideoError(id, e)}
                       onPlay={() => setPlayingStates(prev => ({
                         ...prev,
                         [id]: true
@@ -356,7 +356,7 @@ export const Playbooks = () => {
               }) => (
                 <div key={id} className="group relative w-full">
                   {/* Video Container - Mobile - Matches CC card sizing exactly */}
-                  <div className="relative w-full h-80 popular-video-card overflow-hidden rounded-xl bg-gray-900">
+                  <div className="relative w-full h-96 popular-video-card overflow-hidden rounded-xl bg-gray-900">
                     {/* Cover Photo Overlay - Mobile */}
                     <div 
                       className={`absolute inset-0 bg-cover bg-center bg-no-repeat z-10 transition-opacity duration-300 ${playingStates[id] ? 'opacity-0' : 'opacity-100'}`}
@@ -370,10 +370,10 @@ export const Playbooks = () => {
                       }} 
                       className="w-full h-full object-cover object-center" 
                       data-src={src} 
-                      preload="metadata" 
+                      preload="none" 
                       playsInline 
                       muted 
-                      onError={e => handleVideoError(id, e)} 
+                      onError={e => handleVideoError(id, e)}
                       onPlay={() => setPlayingStates(prev => ({
                         ...prev,
                         [id]: true
@@ -446,7 +446,7 @@ export const Playbooks = () => {
           @media (max-width: 767px) {
             .popular-video-card {
               width: 100% !important; /* Full width on mobile like CC cards */
-              height: 20rem; /* Matches CC section h-80 (320px) height exactly */
+              height: 24rem; /* 384px height on mobile */
             }
           }
 
@@ -454,7 +454,7 @@ export const Playbooks = () => {
           @media (min-width: 768px) {
             .popular-video-card {
               width: 20rem; /* 320px on desktop */
-              height: 20rem; /* 320px on desktop */
+              height: 24rem; /* 384px on desktop - taller ratio */
             }
           }
 
