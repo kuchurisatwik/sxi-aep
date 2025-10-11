@@ -162,17 +162,19 @@ export const ProductCards = () => {
                                   <ul className="text-muted-foreground text-sm space-y-2">
                                     <li>• Take a screenshot of your payment confirmation.</li>
                                     <li>• To pay: click <strong>"Pay"</strong> to reveal the QR — scan it with any UPI app to complete payment.</li>
-                                    <li>• <strong>
-                                      <a 
-                                        href={`https://wa.me/917416348210?text=Hi%2C%20I%20have%20completed%20the%20payment%20for%20${encodeURIComponent(product.title)}%20and%20will%20attach%20the%20screenshot.%20Please%20confirm.`}
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="text-firestorm-red hover:underline"
-                                        aria-label="Send payment screenshot via WhatsApp"
-                                      >
-                                        SEND THE PAYMENT SCREENSHOTS, BY CLICKING HERE
-                                      </a>
-                                    </strong></li>
+                                    <li>• Send your payment screenshot via Instagram DM to{' '}
+                                      <strong>
+                                        <a 
+                                          href="https://www.instagram.com/sxi.aep/"
+                                          target="_blank" 
+                                          rel="noopener noreferrer"
+                                          className="text-firestorm-red hover:underline"
+                                          aria-label="Send payment screenshot via Instagram DM to @sxi.aep"
+                                        >
+                                          @sxi.aep
+                                        </a>
+                                      </strong>
+                                    </li>
                                     <li>• I'll verify it and send you the file for your purchase.</li>
                                   </ul>
                                 </div>
